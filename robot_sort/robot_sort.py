@@ -95,9 +95,35 @@ class SortingRobot:
     def sort(self):
         """
         Sort the robot's list.
+        Initial plan and pseudocode:
+        I believe this is similar to iterative bubble sort with the light being used as a boolean and the while loop can end once it's sorted.
+        However we can maybe do a two way bubble sort where we first only move right to swap and compare items in the list right next to each
+        other one by one until we reach the last position on the right at the end of the list moving the highest number. Then we go in reverse
+        with the same process of moving left to compare and swap items that are smaller one by one until we reach the first position with the 
+        lowest number. We keep going back and forth through each iteration right and then back left until it is sorted.
         """
-        # Fill this out
-        pass
+        self.set_light_on() # start first loop
+        while self.light_is_on():
+            self.set_light_off() # turn off light while going list
+            while self.can_move_right(): # check if robot can keep moving right until it cannot
+                self.swap_item() # pick up or sway item where robot is positioned, position becomes empty on first entry
+                self.move_right() # move one step to the right
+                if self.compare_item() == 1: # check if the held item is larger than the item the robot is positioned at
+                    self.swap_item() # if yes, then swap the items
+                    self.set_light_on() # turn light on to go back to line 106 (holding item in the next position over)
+                self.move_left() # if held item is smaller or you have made a swap holding the small item, move left
+                self.swap_item() # swap or drop the item into the empty position
+                self.move_right() # continue moving right to pick up next item (back to line 109) until robot cannot go right anymore
+            # repeat the reverse process going back left staying in that loop until it cannot go left before start back to the right iteration
+            while self.can_move_left():
+                self.swap_item()
+                self.move_left()
+                if self.compare_item() == -1:
+                    self.swap_item()
+                    self.set_light_on()
+                self.move_right()
+                self.swap_item()
+                self.move_left()
 
 
 if __name__ == "__main__":
